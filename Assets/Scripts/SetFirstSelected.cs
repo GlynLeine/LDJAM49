@@ -5,8 +5,13 @@ using UnityEngine.EventSystems;
 
 public class SetFirstSelected : MonoBehaviour
 {
+    public static GameObject uiRoot;
+    public static GameObject firstSelected;
+
     private void Awake()
     {
-        GameManager.eventSystem.firstSelectedGameObject = gameObject;
+        firstSelected = gameObject;
+        uiRoot = GetComponentInParent<Canvas>().gameObject;
+        GameManager.UpdateFirstSelected();
     }
 }

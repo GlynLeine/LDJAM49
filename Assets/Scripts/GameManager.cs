@@ -5,12 +5,16 @@ using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.Users;
+using UnityEngine.InputSystem.LowLevel;
 
 public class GameManager : MonoBehaviour
 {
     public static int startingScene = 1;
 
-    private Dictionary<PlayerInput, Player> m_playerMap;
+    public InputActionReference joinAction;
+
+    private Dictionary<PlayerInput, Player> m_playerMap = new Dictionary<PlayerInput, Player>();
     private PlayerInputManager m_inputManager;
 
     private static Camera m_worldCamera;
@@ -25,27 +29,45 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private static EventSystem m_eventSystem;
-    public static EventSystem eventSystem
+    private static List<MultiplayerEventSystem> m_eventSystems = new List<MultiplayerEventSystem>();
+    public static MultiplayerEventSystem[] eventSystems
     {
         get
         {
-            if (!m_eventSystem)
-                m_eventSystem = FindObjectOfType<EventSystem>();
+            if (m_eventSystems.Count == 0)
+                m_eventSystems.AddRange(FindObjectsOfType<MultiplayerEventSystem>());
 
-            return m_eventSystem;
+            return m_eventSystems.ToArray();
         }
     }
 
-    private static InputSystemUIInputModule m_uiInputModule;
-    public static InputSystemUIInputModule uiInputModule
+    private static List<InputSystemUIInputModule> m_uiInputModules = new List<InputSystemUIInputModule>();
+    public static InputSystemUIInputModule[] uiInputModules
     {
         get
         {
-            if (!m_uiInputModule)
-                m_uiInputModule = eventSystem.GetComponent<InputSystemUIInputModule>();
+            if (m_uiInputModules.Count == 0)
+                foreach (var es in eventSystems)
+                    m_uiInputModules.Add(es.GetComponent<InputSystemUIInputModule>());
 
-            return m_uiInputModule;
+            return m_uiInputModules.ToArray();
+        }
+    }
+
+    public static void AddUIInput(MultiplayerEventSystem eventSystem)
+    {
+        eventSystem.playerRoot = SetFirstSelected.uiRoot;
+        eventSystem.firstSelectedGameObject = SetFirstSelected.firstSelected;
+        m_eventSystems.Add(eventSystem);
+        m_uiInputModules.Add(eventSystem.GetComponent<InputSystemUIInputModule>());
+    }
+
+    public static void UpdateFirstSelected()
+    {
+        foreach (var es in eventSystems)
+        {
+            es.playerRoot = SetFirstSelected.uiRoot;
+            es.firstSelectedGameObject = SetFirstSelected.firstSelected;
         }
     }
 
@@ -66,25 +88,36 @@ public class GameManager : MonoBehaviour
         if (!m_instance)
         {
             DontDestroyOnLoad(gameObject);
+            m_inputManager = GetComponent<PlayerInputManager>();
+            joinAction.action.Enable();
+
+            InputUser.onUnpairedDeviceUsed += OnUnpairedDeviceUsed;
+            ++InputUser.listenForUnpairedDeviceActivity;
+
             m_instance = this;
+
             SceneManager.LoadScene(startingScene);
         }
     }
 
-    void OnPlayerJoined(PlayerInput playerInput)
+    private void OnUnpairedDeviceUsed(InputControl control, InputEventPtr eventPtr)
     {
-        if (!m_playerMap.ContainsKey(playerInput))
+        if(!joinAction.action.triggered)
+            return;
+
+        var device = control.device;
+
+        if (PlayerInput.FindFirstPairedToDevice(device) != null)
+            return;
+
+        foreach (var scheme in joinAction.asset.controlSchemes)
         {
-            m_playerMap.Add(playerInput, Instantiate(m_inputManager.playerPrefab, transform).GetComponent<Player>().Connect(playerInput));
+            if (scheme.SupportsDevice(device))
+            {
+                var input = m_inputManager.JoinPlayer(playerIndex: m_playerMap.Count, controlScheme: scheme.name, pairWithDevice: device);
+                m_playerMap.Add(input, input.GetComponent<Player>());
+            }
         }
     }
 
-    void OnPlayerLeft(PlayerInput playerInput)
-    {
-        if (m_playerMap.ContainsKey(playerInput))
-        {
-            m_playerMap[playerInput].Disconnect();
-            m_playerMap.Remove(playerInput);
-        }
-    }
 }

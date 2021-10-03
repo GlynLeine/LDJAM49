@@ -32,7 +32,7 @@
                     "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard Player 1",
+                    "groups": "WASD",
                     "action": "Horizontal",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -43,7 +43,7 @@
                     "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard Player 1",
+                    "groups": "WASD",
                     "action": "Horizontal",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -65,7 +65,7 @@
                     "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard Player 2",
+                    "groups": "Arrows",
                     "action": "Horizontal",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -76,7 +76,7 @@
                     "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard Player 2",
+                    "groups": "Arrows",
                     "action": "Horizontal",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -122,7 +122,7 @@
             "actions": [
                 {
                     "name": "Confirm",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "5feeb471-d259-4570-b1b6-557aa421a177",
                     "expectedControlType": "Button",
                     "processors": "",
@@ -130,9 +130,9 @@
                 },
                 {
                     "name": "Navigate",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "3b3fa13e-1756-4abd-a24d-19029b50f130",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
                 }
@@ -144,7 +144,7 @@
                     "path": "<Keyboard>/numpad0",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard Player 2",
+                    "groups": "Arrows",
                     "action": "Confirm",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -155,7 +155,7 @@
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard Player 1",
+                    "groups": "WASD",
                     "action": "Confirm",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -188,7 +188,7 @@
                     "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard Player 1",
+                    "groups": "WASD",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -199,7 +199,7 @@
                     "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard Player 1",
+                    "groups": "WASD",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -210,7 +210,7 @@
                     "path": "",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard Player 1",
+                    "groups": "WASD",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -221,7 +221,7 @@
                     "path": "",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard Player 1",
+                    "groups": "WASD",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -243,7 +243,7 @@
                     "path": "<Keyboard>/upArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard Player 2",
+                    "groups": "Arrows",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -254,7 +254,7 @@
                     "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard Player 2",
+                    "groups": "Arrows",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -265,7 +265,7 @@
                     "path": "",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard Player 2",
+                    "groups": "Arrows",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -276,7 +276,7 @@
                     "path": "",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard Player 2",
+                    "groups": "Arrows",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -348,7 +348,7 @@
                     "id": "a093a132-cc83-4db9-b87d-02fcca1bdfd5",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Tap"
                 }
             ],
             "bindings": [
@@ -358,7 +358,7 @@
                     "path": "<Keyboard>/numpad0",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard Player 2",
+                    "groups": "Arrows",
                     "action": "Confirm",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -369,7 +369,7 @@
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard Player 1",
+                    "groups": "WASD",
                     "action": "Confirm",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -394,30 +394,30 @@
             "bindingGroup": "Controller",
             "devices": [
                 {
-                    "devicePath": "<WebGLGamepad>",
-                    "isOptional": true,
+                    "devicePath": "<Gamepad>",
+                    "isOptional": false,
                     "isOR": false
                 }
             ]
         },
         {
-            "name": "Keyboard Player 1",
-            "bindingGroup": "Keyboard Player 1",
+            "name": "WASD",
+            "bindingGroup": "WASD",
             "devices": [
                 {
                     "devicePath": "<Keyboard>",
-                    "isOptional": true,
+                    "isOptional": false,
                     "isOR": false
                 }
             ]
         },
         {
-            "name": "Keyboard Player 2",
-            "bindingGroup": "Keyboard Player 2",
+            "name": "Arrows",
+            "bindingGroup": "Arrows",
             "devices": [
                 {
                     "devicePath": "<Keyboard>",
-                    "isOptional": true,
+                    "isOptional": false,
                     "isOR": false
                 }
             ]
