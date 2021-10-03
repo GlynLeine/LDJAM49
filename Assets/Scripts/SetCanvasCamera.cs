@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class SetCanvasCamera : MonoBehaviour
 {
-    private void Awake()
+    private void Start()
     {
         GetComponent<Canvas>().worldCamera = GameManager.worldCamera;
     }

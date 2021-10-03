@@ -9,6 +9,6 @@ public class SceneValidator : MonoBehaviour
     {
         GameManager.startingScene = SceneManager.GetActiveScene().buildIndex;
 
-        var inst = GameManager.instance;
+        GameManager.Validate();
     }
 }

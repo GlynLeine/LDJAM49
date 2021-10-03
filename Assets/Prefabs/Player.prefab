@@ -45,6 +45,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   eventSystemPrefab: {fileID: 7814338087800650726, guid: 890e6719d54677e4cbaa06830c8df170, type: 3}
+  birdPrefab: {fileID: 5550258301236419516, guid: e2557c571013f83478cdc35e39654844, type: 3}
+  movementSpeed: 10
+  fallSpeed: 4
+  towerPrefab: {fileID: 3763077978710955463, guid: 4de5e396845a9a44799d5ac6ec650717, type: 3}
 --- !u!114 &7257850710808977648
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,7 +73,23 @@ MonoBehaviour:
   m_ControlsChangedEvent:
     m_PersistentCalls:
       m_Calls: []
-  m_ActionEvents: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 3b31bdf0-9728-49e8-8ac9-6002d4c1db4d
+    m_ActionName: Player/Horizontal[/Keyboard/a,/Keyboard/d,/Keyboard/leftArrow,/Keyboard/rightArrow,/DualShock4GamepadHID/leftStick/left,/DualShock4GamepadHID/leftStick/right]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 5feeb471-d259-4570-b1b6-557aa421a177
+    m_ActionName: UI/Confirm[/Keyboard/numpad0,/Keyboard/space,/DualShock4GamepadHID/buttonSouth]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 3b3fa13e-1756-4abd-a24d-19029b50f130
+    m_ActionName: UI/Navigate[/Keyboard/w,/Keyboard/s,/Keyboard/upArrow,/Keyboard/downArrow,/DualShock4GamepadHID/leftStick/up,/DualShock4GamepadHID/leftStick/down]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a093a132-cc83-4db9-b87d-02fcca1bdfd5
+    m_ActionName: Join/Confirm[/Keyboard/numpad0,/Keyboard/space,/DualShock4GamepadHID/buttonSouth]
   m_NeverAutoSwitchControlSchemes: 1
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

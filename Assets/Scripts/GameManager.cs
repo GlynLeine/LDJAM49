@@ -15,7 +15,13 @@ public class GameManager : MonoBehaviour
     public InputActionReference joinAction;
 
     private Dictionary<PlayerInput, Player> m_playerMap = new Dictionary<PlayerInput, Player>();
+
     private PlayerInputManager m_inputManager;
+    private bool m_WASDFirst;
+    private bool m_KeyboardAdded = false;
+
+    private bool m_gameStarted = false;
+    private Transform[] m_slots;
 
     private static Camera m_worldCamera;
     public static Camera worldCamera
@@ -76,11 +82,32 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            if (!m_instance)
-                SceneManager.LoadScene(0);
-
             return m_instance;
         }
+    }
+
+    public static void Validate()
+    {
+        if (!m_instance)
+            SceneManager.LoadScene(0);
+    }
+
+    public void StartGame(Transform[] slots)
+    {
+        m_gameStarted = true;
+        m_slots = slots;
+
+        int i = 0;
+        foreach (var player in m_playerMap.Values)
+            player.StartGame(slots[i++]);
+    }
+
+    public void EndGame()
+    {
+        m_gameStarted = false;
+
+        foreach (var player in m_playerMap.Values)
+            player.EndGame();
     }
 
     private void Awake()
@@ -89,10 +116,11 @@ public class GameManager : MonoBehaviour
         {
             DontDestroyOnLoad(gameObject);
             m_inputManager = GetComponent<PlayerInputManager>();
-            joinAction.action.Enable();
 
             InputUser.onUnpairedDeviceUsed += OnUnpairedDeviceUsed;
-            ++InputUser.listenForUnpairedDeviceActivity;
+            InputUser.listenForUnpairedDeviceActivity++;
+            joinAction.action.performed += OnJoin;
+            joinAction.action.Enable();
 
             m_instance = this;
 
@@ -100,24 +128,102 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        InputUser.onUnpairedDeviceUsed -= OnUnpairedDeviceUsed;
+        InputUser.listenForUnpairedDeviceActivity--;
+    }
+
+    private string PathDestination(string input)
+    {
+        var offset = input.LastIndexOf('/');
+        return input.Substring(offset);
+    }
+
+    private void JoinPlayer(string scheme, InputDevice device)
+    {
+        var input = m_inputManager.JoinPlayer(playerIndex: m_playerMap.Count, controlScheme: scheme, pairWithDevice: device);
+        input.transform.parent = transform;
+
+        var player = input.GetComponent<Player>();
+
+        if(m_gameStarted)
+            player.StartGame(m_slots[input.playerIndex]);
+
+        m_playerMap.Add(input, player);
+    }
+
     private void OnUnpairedDeviceUsed(InputControl control, InputEventPtr eventPtr)
     {
-        if(!joinAction.action.triggered)
-            return;
-
         var device = control.device;
 
-        if (PlayerInput.FindFirstPairedToDevice(device) != null)
+        InputBinding validBinding = new InputBinding();
+        bool found = false;
+
+        var controlName = PathDestination(control.path);
+
+        foreach (var binding in joinAction.action.bindings)
+        {
+            if (PathDestination(binding.path) == controlName)
+            {
+                validBinding = binding;
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
             return;
 
         foreach (var scheme in joinAction.asset.controlSchemes)
         {
-            if (scheme.SupportsDevice(device))
+            if (scheme.bindingGroup == validBinding.groups)
             {
-                var input = m_inputManager.JoinPlayer(playerIndex: m_playerMap.Count, controlScheme: scheme.name, pairWithDevice: device);
-                m_playerMap.Add(input, input.GetComponent<Player>());
+                if (device is Keyboard)
+                {
+                    m_WASDFirst = scheme.name == "WASD";
+                    m_KeyboardAdded = true;
+                    JoinPlayer(m_WASDFirst ? "Arrows" : "WASD", device);
+                }
+                else
+                    JoinPlayer(scheme.name, device);
+                return;
             }
         }
     }
 
+    void OnJoin(InputAction.CallbackContext ctx)
+    {
+        if(!m_KeyboardAdded)
+            return;
+
+        var device = ctx.control.device;
+
+        if (device is Keyboard)
+        {
+            InputBinding validBinding = new InputBinding();
+            bool found = false;
+
+            var controlName = PathDestination(ctx.control.path);
+
+            foreach (var binding in joinAction.action.bindings)
+            {
+                if (PathDestination(binding.path) == controlName)
+                {
+                    validBinding = binding;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+                return;
+
+            if (validBinding.groups == (m_WASDFirst ? "Arrows" : "WASD"))
+            {
+                joinAction.action.performed -= OnJoin;
+                JoinPlayer(m_WASDFirst ? "WASD" : "Arrows", device);
+            }
+        }
+    }
 }

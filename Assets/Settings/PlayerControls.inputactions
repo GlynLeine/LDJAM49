@@ -7,11 +7,19 @@
             "actions": [
                 {
                     "name": "Horizontal",
-                    "type": "Value",
+                    "type": "PassThrough",
                     "id": "3b31bdf0-9728-49e8-8ac9-6002d4c1db4d",
                     "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Drop",
+                    "type": "Button",
+                    "id": "478ed798-7e8c-43be-ac55-e70ce3935566",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
                 }
             ],
             "bindings": [
@@ -97,7 +105,7 @@
                     "id": "e4850555-27c4-4b5c-8f4d-4c0b9e374f83",
                     "path": "<Gamepad>/leftStick/left",
                     "interactions": "",
-                    "processors": "Clamp(min=-1)",
+                    "processors": "",
                     "groups": "Controller",
                     "action": "Horizontal",
                     "isComposite": false,
@@ -108,11 +116,44 @@
                     "id": "fe0fe986-5ef0-4c4b-a144-3d23daabc9da",
                     "path": "<Gamepad>/leftStick/right",
                     "interactions": "",
-                    "processors": "Clamp(max=1)",
+                    "processors": "",
                     "groups": "Controller",
                     "action": "Horizontal",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "3869ade8-0989-4ce0-8221-1335ba72dd0d",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "Drop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "25356eff-a39a-421a-a6c9-3f3b52ea304a",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "WASD",
+                    "action": "Drop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "57e7d72c-c75c-4488-a15e-8ce8c5922734",
+                    "path": "<Keyboard>/numpad0",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Arrows",
+                    "action": "Drop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -343,7 +384,7 @@
             "id": "8fde80cc-9b85-43b9-b03e-1d3f248403fc",
             "actions": [
                 {
-                    "name": "Confirm",
+                    "name": "Join",
                     "type": "Button",
                     "id": "a093a132-cc83-4db9-b87d-02fcca1bdfd5",
                     "expectedControlType": "Button",
@@ -358,8 +399,8 @@
                     "path": "<Keyboard>/numpad0",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Arrows",
-                    "action": "Confirm",
+                    "groups": "WASD",
+                    "action": "Join",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -369,8 +410,8 @@
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
-                    "groups": "WASD",
-                    "action": "Confirm",
+                    "groups": "Arrows",
+                    "action": "Join",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -381,7 +422,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Controller",
-                    "action": "Confirm",
+                    "action": "Join",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
