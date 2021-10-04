@@ -7,6 +7,10 @@ public class Bird : MonoBehaviour
     [System.NonSerialized]
     public Player player;
 
+    public static Bird highestBird;
+
+    public bool trackheight;
+
     private void Start()
     {
         GetComponent<Rigidbody>().centerOfMass = Vector3.zero;
@@ -19,7 +23,14 @@ public class Bird : MonoBehaviour
 
     private void Update()
     {
-        if (transform.position.y <= -2f)
+        float height = transform.position.y;
+        float maxHeight = highestBird ? highestBird.transform.position.y : 0f;
+
+        if (height <= -2f)
             player.HandleBirdDeath(this);
+        else if (trackheight && height > maxHeight)
+        {
+            highestBird = this;
+        }
     }
 }

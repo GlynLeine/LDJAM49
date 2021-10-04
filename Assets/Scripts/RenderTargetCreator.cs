@@ -13,7 +13,7 @@ public class RenderTargetCreator : UIBehaviour
 
     void SetTarget()
     {
-        if(!worldCamera)
+        if (!worldCamera)
             return;
 
         var targetImage = GetComponent<RawImage>();
@@ -38,12 +38,14 @@ public class RenderTargetCreator : UIBehaviour
         targetImage.texture = renderTarget;
     }
 
+#if UNITY_EDITOR
     protected override void OnValidate()
     {
         base.OnValidate();
         if (enabled)
             SetTarget();
     }
+#endif
 
     protected override void Awake()
     {

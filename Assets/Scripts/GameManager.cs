@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,7 +15,14 @@ public class GameManager : MonoBehaviour
 
     public InputActionReference joinAction;
 
+    public PlayerColor[] playerColors;
+
     private Dictionary<PlayerInput, Player> m_playerMap = new Dictionary<PlayerInput, Player>();
+    private static Player m_winner;
+    public static Player winner { get => m_winner; }
+
+    private static int[] m_scores;
+    public static int[] scores { get => m_scores; }
 
     private PlayerInputManager m_inputManager;
     private bool m_WASDFirst;
@@ -22,6 +30,8 @@ public class GameManager : MonoBehaviour
 
     private bool m_gameStarted = false;
     private Transform[] m_slots;
+
+    public static event System.Action<Player> onJoin;
 
     private static Camera m_worldCamera;
     public static Camera worldCamera
@@ -59,6 +69,8 @@ public class GameManager : MonoBehaviour
             return m_uiInputModules.ToArray();
         }
     }
+
+    public static Player[] players { get => instance.m_playerMap.Values.ToArray(); }
 
     public static void AddUIInput(MultiplayerEventSystem eventSystem)
     {
@@ -106,12 +118,25 @@ public class GameManager : MonoBehaviour
     {
         m_gameStarted = false;
 
-        foreach (var player in m_playerMap.Values)
-            player.EndGame();
+        m_winner = Player.mostBirds;
+
+        var plyrs = players;
+
+        m_scores = new int[plyrs.Length];
+
+        for (int i = 0; i < plyrs.Length; i++)
+        {
+            m_scores[i] = plyrs[i].birdCount;
+            plyrs[i].EndGame();
+        }
+
+        SceneManager.LoadScene(3);
     }
 
     private void Awake()
     {
+        onJoin = null;
+
         if (!m_instance)
         {
             DontDestroyOnLoad(gameObject);
@@ -125,6 +150,15 @@ public class GameManager : MonoBehaviour
             m_instance = this;
 
             SceneManager.LoadScene(startingScene);
+        }
+    }
+
+    private void Update()
+    {
+        if (m_gameStarted && Bird.highestBird)
+        {
+            Debug.Log("Player " + Bird.highestBird.player.index + " Height: " + Bird.highestBird.transform.position.y);
+            Debug.Log("Player " + Player.mostBirds.index + " Birds: " + Player.mostBirds.birdCount);
         }
     }
 
@@ -146,15 +180,22 @@ public class GameManager : MonoBehaviour
         input.transform.parent = transform;
 
         var player = input.GetComponent<Player>();
+        player.playerColor = playerColors[input.playerIndex];
+        player.index = input.playerIndex;
 
-        if(m_gameStarted)
+        if (m_gameStarted)
             player.StartGame(m_slots[input.playerIndex]);
 
         m_playerMap.Add(input, player);
+
+        onJoin(player);
     }
 
     private void OnUnpairedDeviceUsed(InputControl control, InputEventPtr eventPtr)
     {
+        if (m_gameStarted)
+            return;
+
         var device = control.device;
 
         InputBinding validBinding = new InputBinding();
@@ -194,7 +235,10 @@ public class GameManager : MonoBehaviour
 
     void OnJoin(InputAction.CallbackContext ctx)
     {
-        if(!m_KeyboardAdded)
+        if (m_gameStarted)
+            return;
+
+        if (!m_KeyboardAdded)
             return;
 
         var device = ctx.control.device;
