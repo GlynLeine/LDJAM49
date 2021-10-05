@@ -27,6 +27,11 @@ public class Timer : MonoBehaviour
 
         int floored = Mathf.FloorToInt(time);
         int minutes = floored / 60;
-        text.text = minutes + ":" + (floored - (minutes * 60));
+        int seconds = floored - (minutes * 60);
+        text.text = minutes + ":";
+
+        if(seconds < 10)
+            text.text += "0";
+        text.text += seconds.ToString();
     }
 }
