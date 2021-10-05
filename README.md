@@ -17,6 +17,9 @@ Don't mind the music, it's first time I ever made any XD
  - Left thumbstick for movement
  - South face button (X or A) for confirm or faster birds
 
+## Play the game!
+https://glynleine.github.io
+
 ## Links
 Ludum Dare: https://ldjam.com/events/ludum-dare/49/bird-game <br/>
 Itch.io: https://ty-rymer.itch.io/bird-game
